@@ -2,38 +2,35 @@
 //  TipsyTests.swift
 //  TipsyTests
 //
-//  Created by Matheus Góes on 09/12/21.
+//  Created by Matheus Góes on 16/12/21.
 //  Copyright © 2021 The App Brewery. All rights reserved.
 //
 
 import XCTest
-@testable import Tipsy
 
 class TipsyTests: XCTestCase {
-    
-    let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CalculatorViewController") as! CalculatorViewController
 
-    func testSelectedTip() {
-        let tipCalculatorBrain = TipCalculatorBrain()
-        let tip = tipCalculatorBrain.convertTipToDecimal(tip: "10%")
-        XCTAssertNotNil(tip)
-        XCTAssertEqual(tip, 0.1)
+    override func setUpWithError() throws {
+        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
-    func testBillTextFieldKeyboard() {
-        let textField = viewController.billTextField
-        guard let billTextField = textField else { return }
-        
-        XCTAssertEqual(billTextField.keyboardType, UIKeyboardType.numbersAndPunctuation)
+
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
-    func testBillTextFieldValue() {
-        let textField = viewController.billTextField
-        guard let billTextField = textField else { return }
-        
-        billTextField.text = "100"
-        
-        XCTAssertEqual(billTextField.text, "100")
+
+    func testExample() throws {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Any test you write for XCTest can be annotated as throws and async.
+        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
+        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    }
+
+    func testPerformanceExample() throws {
+        // This is an example of a performance test case.
+        measure {
+            // Put the code you want to measure the time of here.
+        }
     }
 
 }

@@ -17,6 +17,7 @@ class CalculatorViewController: UIViewController {
     @IBOutlet weak var splitNumberLabel: UILabel!
     @IBOutlet weak var stepper: UIStepper!
     
+    var tipCalculatorBrain = TipCalculatorBrain()
     var tipPorcentage: Double?
     
     override func viewDidLoad() {
@@ -27,7 +28,7 @@ class CalculatorViewController: UIViewController {
         let tipPct = sender.currentTitle!
         selectButton(button: tipPct)
         
-        tipPorcentage = convertTipToDecimal(tip: tipPct)
+        tipPorcentage = tipCalculatorBrain.convertTipToDecimal(tip: tipPct)
         
         billTextField.endEditing(true)
     }
@@ -49,31 +50,34 @@ class CalculatorViewController: UIViewController {
         }
     }
     
-    func convertTipToDecimal(tip: String) -> Double {
-        let tipPctValue = tip.filter(\.isNumber)
-        let decimalValue = (Double(tipPctValue)! / 100)
-        return decimalValue
-    }
-    
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
-        setNumberOfPeopleToSplit(target: sender)
+        setNumberOfPeopleToSplit(value: sender.value)
     }
     
-    func setNumberOfPeopleToSplit(target: UIStepper) {
-        let numberOfPeopleToSplit = Int(target.value)
+    func setNumberOfPeopleToSplit(value: Double) {
+        let numberOfPeopleToSplit = Int(value)
         splitNumberLabel.text = String(numberOfPeopleToSplit)
     }
 
     @IBAction func calculatePressed(_ sender: UIButton) {
-        calculateBillAmountForEachPerson()
+        guard let inputValue = billTextField.text else { return }
+        guard let porcentage = tipPorcentage else { return }
+        guard let numberOfPeople = Double(splitNumberLabel.text!) else { return }
+        
+        tipCalculatorBrain.calculateBill(inputValue: inputValue, tip: porcentage, numberOfPeople: numberOfPeople)
+        tipCalculatorBrain.setBillInformation(total: inputValue, tip: porcentage, numberOfPeople: numberOfPeople)
+        self.performSegue(withIdentifier: "goToResult", sender: self)
     }
     
-    func calculateBillAmountForEachPerson() {
-        guard let totalBill = Double(billTextField.text!) else { return }
-        guard let numberOfPeople = Double(splitNumberLabel.text!) else { return }
-        guard let porcentage = tipPorcentage else { return }
-        
-        let total = ((totalBill * porcentage) + totalBill) / numberOfPeople
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToResult" {
+            let bill = tipCalculatorBrain.getBill()
+            let billInformation = tipCalculatorBrain.getBillInformation()
+
+            let destinationVC = segue.destination as! ResultsViewController
+            destinationVC.settings = billInformation
+            destinationVC.total = bill
+        }
     }
 }
 

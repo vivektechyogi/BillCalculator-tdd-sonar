@@ -9,6 +9,10 @@
 import Foundation
 
 struct TipCalculatorBrain {
+    
+    var result: Double = 0.0
+    var bill: Bill?
+    
     func convertTipToDecimal(tip: String) -> Double {
         let numberFormatter = NumberFormatter()
         numberFormatter.minimumFractionDigits = 1
@@ -17,11 +21,31 @@ struct TipCalculatorBrain {
         guard let tipValue = value else { return 0.0 }
         
         let tipValueConvertedToDecimal = tipValue / 100
-        let formattedTipValue = numberFormatter.string(from: NSNumber.init(value: tipValueConvertedToDecimal))
+        return tipValueConvertedToDecimal
+    }
+    
+    mutating func calculateBill(inputValue: String, tip: Double, numberOfPeople: Double) -> String {
+        let value = Double(inputValue)
         
-        guard let result = formattedTipValue else { return 0.0 }
-        guard let decimalTipValue = Double(result) else { return 0.0 }
-        
-        return decimalTipValue
+        if let value = value {
+            result = ((value * tip) + value) / numberOfPeople
+        }
+        return String(result)
+    }
+    
+    func getBill() -> String {
+        return String(format: "%.2f", result)
+    }
+    
+    mutating func setBillInformation(total: String, tip: Double, numberOfPeople: Double) {
+        bill = Bill(total: total, tip: tip, numberOfPeople: numberOfPeople)
+    }
+    
+    func getBillInformation() -> String {
+        var result = ""
+        if let numberOfPeople = bill?.numberOfPeople, let tip = bill?.tip {
+            result = "Split between \(Int(numberOfPeople)) people, with \(Int(tip * 100))% tip."
+        }
+        return result
     }
 }
