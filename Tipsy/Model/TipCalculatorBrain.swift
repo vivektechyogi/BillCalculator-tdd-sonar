@@ -11,7 +11,7 @@ import Foundation
 struct TipCalculatorBrain {
     
     var result: Double = 0.0
-    var bill: Bill?
+    var bill: Bill
     
     func convertTipToDecimal(tip: String) -> Double {
         let numberFormatter = NumberFormatter()
@@ -46,6 +46,6 @@ struct TipCalculatorBrain {
         if let numberOfPeople = bill?.numberOfPeople, let tip = bill?.tip {
             result = "Split between \(Int(numberOfPeople)) people, with \(Int(tip * 100))% tip."
         }
-        return result
+        return result ?? 0
     }
 }
